@@ -8,10 +8,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cg.ecom.dto.AddCartDTO;
 import com.cg.ecom.dto.CartDTO;
 import com.cg.ecom.entity.Cart;
 import com.cg.ecom.entity.Customers;
 import com.cg.ecom.entity.ProductItems;
+import com.cg.ecom.exceptions.CartIdAlreadyExistsException;
 import com.cg.ecom.repository.CartRepository;
 import com.cg.ecom.service.CartService;
 
@@ -22,36 +24,39 @@ public class CartServiceImpl implements CartService {
 	private CartRepository cartRepository;
 
 	@Override
-	public CartDTO addToCart(CartDTO cartDTO) {
+	public CartDTO addToCart(AddCartDTO addCartDTO) {
 
 		Cart cart = new Cart();
 		Customers cust = new Customers();
-		
 		ProductItems product = new ProductItems();
-		product.setProductId(cartDTO.getProductId());
-
 		
-		cust.setCustomerId(cartDTO.getCustomerId());
+		product.setProductId(addCartDTO.getProductId());
+		cust.setCustomerId(addCartDTO.getCustomerId());
 		cart.setCustomers(cust);
-		
 		cart.setProductItems(product);
-		cart.setCartId(cartDTO.getCartId());
-		
-
-		cart.setQuantity(cartDTO.getQuantity());
+		cart.setQuantity(addCartDTO.getQuantity());
 
 		Cart cartsave = cartRepository.save(cart);
 		
+		CartDTO cartDTO = new CartDTO();
 		cartDTO.setCartId(cartsave.getCartId());
+		cartDTO.setCustomerId(cartsave.getCustomers().getCustomerId());
+		cartDTO.setProductId(cartsave.getProductItems().getProductId());
+		cartDTO.setQuantity(cartsave.getQuantity());
+		
+
 		return cartDTO;
 
 
 	}
 
 	@Override
-	public CartDTO updateCart(CartDTO cartDTO) {
+	public CartDTO updateCart(CartDTO cartDTO) 
+	{
+		Optional<Cart> optionalCart = cartRepository.findById(cartDTO.getCustomerId());
+	    if (optionalCart.isPresent()) {
+		
 		Cart cart = new Cart();
-//		cart.setPrice(cartDTO.getPrice());
 		cart.setQuantity(cartDTO.getQuantity());
 		cart.setCartId(cartDTO.getCartId());
 
@@ -59,6 +64,11 @@ public class CartServiceImpl implements CartService {
 		cartRepository.save(cart);
 		return cartDTO;
 	}
+	else {
+        throw new CartIdAlreadyExistsException();
+    }
+}
+	    
 
 	@Override
 	public boolean deleteCart(CartDTO cartDTO) {
@@ -83,7 +93,7 @@ public class CartServiceImpl implements CartService {
 	@Override
 	public List<CartDTO> findAll() {
 
-		Iterable<Cart> cart = cartRepository.findAll();
+		List<Cart> cart = cartRepository.findAll();
 		List<CartDTO> dtos = new ArrayList<>();
 		for (Cart carts : cart) {
 			CartDTO dto = new CartDTO();

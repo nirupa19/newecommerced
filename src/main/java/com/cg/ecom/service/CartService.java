@@ -2,11 +2,12 @@ package com.cg.ecom.service;
 
 import java.util.List;
 
+import com.cg.ecom.dto.AddCartDTO;
 import com.cg.ecom.dto.CartDTO;
 
 public interface CartService {
 
-	public CartDTO addToCart(CartDTO cartDTO);
+	public CartDTO addToCart(AddCartDTO addCartDTO);
 
 	public CartDTO updateCart(CartDTO cartDTO);
 

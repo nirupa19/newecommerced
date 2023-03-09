@@ -8,8 +8,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cg.ecom.dto.AddProductSupplierDTO;
 import com.cg.ecom.dto.ProductSupplierDTO;
-import com.cg.ecom.entity.Customers;
 import com.cg.ecom.entity.ProductSupplier;
 import com.cg.ecom.exceptions.ProductSupplierNotAvailableException;
 import com.cg.ecom.repository.ProductSupplierRepository;
@@ -20,40 +20,31 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 	@Autowired
 	private ProductSupplierRepository productSupplierRepository;
 
-//	 public void  ProductSupplierDTO() {
-//	        for (int i = 100; i <= 200; i++) {
-//	        	ProductSupplier entity = new ProductSupplier();
-//	            int counter = 0;
-//				entity.setProductSupplierId(i);
-//	            // set other fields if necessary
-//				productSupplierRepository.save(entity);
-//	        }
-//	    }
-	
 	
 	@Override
-	public ProductSupplierDTO addProductSupplier(ProductSupplierDTO productSupplierDto) {
+	public ProductSupplierDTO addProductSupplier(AddProductSupplierDTO addProductSupplierDTO) {
 
-//		User user=new User();
-//		user.setPassword(productSupplierDto.getPassword());
-//		user.setRole("OWNER");
-//		user.setUsername(productSupplierDto.getUsername());		
 
-//		User userSave=userRepository.save(user);
 		ProductSupplier productSupplier = new ProductSupplier();
-//		productSupplier.setUserId(userSave);
-		productSupplier.setProductSupplierName(productSupplierDto.getProductSupplierName());
-		productSupplier.setEmailId(productSupplierDto.getEmailId());
-		productSupplier.setContactNo(productSupplierDto.getContactNo());
-        //productSupplier.setId(productSupplierDto.productSupplierId());
-        productSupplier.setLocation(productSupplierDto.getLocation());
+		productSupplier.setProductSupplierName(addProductSupplierDTO.getProductSupplierName());
+		productSupplier.setEmailId(addProductSupplierDTO.getEmailId());
+		productSupplier.setContactNo(addProductSupplierDTO.getContactNo());
+        productSupplier.setLocation(addProductSupplierDTO.getLocation());
 		
         ProductSupplier productSupplierave=productSupplierRepository.save(productSupplier);
-//        productSupplierDto.setUserId(userSave.getUserId());
+
+        ProductSupplierDTO productSupplierDto = new ProductSupplierDTO();
         productSupplierDto.setProductSupplierId(productSupplierave.getProductSupplierId());
+        productSupplierDto.setProductSupplierName(productSupplierave.getProductSupplierName());
+        productSupplierDto.setContactNo(productSupplierave.getContactNo());
+        productSupplierDto.setEmailId(productSupplierave.getEmailId());
+        productSupplierDto.setLocation(productSupplierave.getLocation());
+
 		return productSupplierDto;
 	}
 
+	
+	
 	@Override
 	public ProductSupplierDTO updateProductSupplier(ProductSupplierDTO productSupplierDTO) {
 
@@ -95,7 +86,7 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 	@Override
 	public List<ProductSupplierDTO> findAll() {
 
-		Iterable<ProductSupplier> productSupplier = productSupplierRepository.findAll();
+		List<ProductSupplier> productSupplier = productSupplierRepository.findAll();
 		List<ProductSupplierDTO> dtos = new ArrayList<>();
 		for (ProductSupplier productSupplier1 : productSupplier) {
 			ProductSupplierDTO dto = new ProductSupplierDTO();

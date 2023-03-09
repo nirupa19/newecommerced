@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cg.ecom.dto.AddOrdersDTO;
 import com.cg.ecom.dto.OrdersDTO;
 import com.cg.ecom.entity.Orders;
 import com.cg.ecom.exceptions.CartIdAlreadyExistsException;
@@ -34,13 +35,13 @@ public class OrdersController {
 	public OrdersRepository ordersRepository;
 	
 	@PostMapping("/addOrders")
-	public ResponseEntity<OrdersDTO> addOrders(@RequestBody OrdersDTO ordersDTO){
+	public ResponseEntity<OrdersDTO> addOrders(@RequestBody AddOrdersDTO addOrdersDTO){
 		
-		Optional<Orders> existingOrder = ordersRepository.findById(ordersDTO.getCartId());
+		Optional<Orders> existingOrder = ordersRepository.findById(addOrdersDTO.getCartId());
 	    if (!existingOrder.isPresent()) 
 	    {
 		
-			OrdersDTO orders = ordersService.addOrders(ordersDTO);
+			OrdersDTO orders = ordersService.addOrders(addOrdersDTO);
 			return ResponseEntity.ok(orders);
 		
 	}

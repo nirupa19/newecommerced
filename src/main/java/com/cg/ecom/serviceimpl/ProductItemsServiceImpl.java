@@ -8,8 +8,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cg.ecom.dto.AddProductItemsDTO;
 import com.cg.ecom.dto.ProductItemsDTO;
-import com.cg.ecom.entity.Customers;
 import com.cg.ecom.entity.ProductItems;
 import com.cg.ecom.entity.ProductSupplier;
 import com.cg.ecom.repository.ProductItemsRepository;
@@ -22,19 +22,26 @@ public class ProductItemsServiceImpl implements ProductItemsService {
 
 	
 	@Override
-	public ProductItemsDTO addProductItems(ProductItemsDTO productItemsDTO) {
+	public ProductItemsDTO addProductItems(AddProductItemsDTO addProductItemsDTO) {
 
 		ProductItems productitems = new ProductItems();
 		ProductSupplier rest=new ProductSupplier();
 		
-		rest.setProductSupplierId(productItemsDTO.getProductSupplierId());
+		rest.setProductSupplierId(addProductItemsDTO.getProductSupplierId());
 		productitems.setProductSuppliers(rest);
-		productitems.setProductName(productItemsDTO.getProductName());
-		productitems.setPrice(productItemsDTO.getPrice());
-		productitems.setQuantity(productItemsDTO.getQuantity());	
+		productitems.setProductName(addProductItemsDTO.getProductName());
+		productitems.setPrice(addProductItemsDTO.getPrice());
+		productitems.setQuantity(addProductItemsDTO.getQuantity());	
 		
 		ProductItems productitemssave=productItemsRepository.save(productitems);
+		
+		ProductItemsDTO productItemsDTO = new ProductItemsDTO();
+		productItemsDTO.setProductSupplierId(productitemssave.getProductSuppliers().getProductSupplierId());
 		productItemsDTO.setProductId(productitemssave.getProductId());
+		productItemsDTO.setProductName(productitemssave.getProductName());
+		productItemsDTO.setPrice(productitemssave.getPrice());
+		productItemsDTO.setQuantity(productitemssave.getQuantity());
+		
 		return productItemsDTO;
 	}
 
@@ -75,17 +82,15 @@ public class ProductItemsServiceImpl implements ProductItemsService {
 		return null;
 	}
 
-	@Override
 	public List<ProductItemsDTO> findAll() {
-
-		Iterable<ProductItems> productitems = productItemsRepository.findAll();
-		List<ProductItemsDTO> dtos = new ArrayList<>();
-		for (ProductItems productitem : productitems) {
-			ProductItemsDTO dto = new ProductItemsDTO();
-			BeanUtils.copyProperties(productitem, dto);
-			dtos.add(dto);
-		}
-		return dtos;
-	}
-
+	    List<ProductItems> productitems = productItemsRepository.findAll();
+	    List<ProductItemsDTO> dtos = new ArrayList<>();
+	    for (ProductItems productitem : productitems) {
+	      ProductItemsDTO dto = new ProductItemsDTO();
+	      BeanUtils.copyProperties(productitem, dto);
+	      dtos.add(dto);
+	    }
+	    return dtos;
+	  }
+	
 }

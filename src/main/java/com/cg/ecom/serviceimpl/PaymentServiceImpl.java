@@ -1,15 +1,14 @@
 package com.cg.ecom.serviceimpl;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import javax.persistence.criteria.Order;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cg.ecom.dto.AddPaymentDTO;
 import com.cg.ecom.dto.PaymentDTO;
 import com.cg.ecom.entity.Cart;
 import com.cg.ecom.entity.Orders;
@@ -44,57 +43,67 @@ public class PaymentServiceImpl implements PaymentService {
 
 	private Cart cart = new Cart();
 
-	
+		
 	@Override
-	public PaymentDTO addPayment(PaymentDTO paymentDTO) {
+	@Transactional
+	public PaymentDTO addPayment(AddPaymentDTO addPaymentDTO) {
 	    Payment payment = new Payment();
 	    Cart cart = new Cart();
 	    Orders order = new  Orders();
 	    
 	    
 
-	    if (paymentDTO.getPaymentStatus().equalsIgnoreCase("Success")) 
+	    if (addPaymentDTO.getPaymentStatus().equalsIgnoreCase("Success")) 
 	    
 	    {
-	        int productId = paymentDTO.getProductId();
+	        int productId = addPaymentDTO.getProductId();
 	        ProductItems productItem = productItemsRepository.findById(productId).orElse(null);
 	        
 	        
-	        Cart cart2 = cartRepository.findById(paymentDTO.getCartId()).orElse(null);
+	        Cart cart2 = cartRepository.findById(addPaymentDTO.getCartId()).orElse(null);
 	        
 	        if (productItem != null) {
 	        	
-	        	order.setOrderId(paymentDTO.getOrderId());
+	        	order.setOrderId(addPaymentDTO.getOrderId());
 	    	    payment.setOrderId(order);
-	    	    cart.setCartId(paymentDTO.getCartId());
+	    	    cart.setCartId(addPaymentDTO.getCartId());
 	    	    payment.setCartId (cart);
-	    	    payment.setPaymentId(paymentDTO.getPaymentId());
-	    	    payment.setPaymentDate(paymentDTO.getPaymentDate());
-	    	    payment.setPaymentType(paymentDTO.getPaymentType());
-	    	    payment.setPaymentStatus(paymentDTO.getPaymentStatus());
+//	    	    payment.setPaymentId(addPaymentDTO.getPaymentId());
+	    	    payment.setPaymentDate(addPaymentDTO.getPaymentDate());
+	    	    payment.setPaymentType(addPaymentDTO.getPaymentType());
+	    	    payment.setPaymentStatus(addPaymentDTO.getPaymentStatus());
 	        	
 	    	 // Get the total price of the order
-	            int totalPrice = productItem.getPrice() * cart2.getQuantity();
+	    	    ////////////////////
+//	            int totalPrice = productItem.getPrice() * cart2.getQuantity();
+	            
+	            Long totalPrice = paymentRepository.findTotalPriceByCustomerId(addPaymentDTO.getCustomerId());
 	            payment.setTotalPrice(totalPrice);
-	            paymentDTO.setTotalPrice(totalPrice);
-	    	    
+//	            paymentDTO.setTotalPrice(totalPrice);
+
+	            
 	            int updatedQuantity = ((productItem.getQuantity())-(cart2.getQuantity()));
 	            productItem.setQuantity(updatedQuantity);
 	            productItemsRepository.save(productItem);
 	            
+//	            paymentRepository.updateProductItemsQuantityByCustomerId(paymentDTO.getCustomerId());
+	            
 	            Payment paymentSave = paymentRepository.save(payment);
+	            
+	            PaymentDTO paymentDTO = new PaymentDTO();
+	            paymentDTO.setCartId(addPaymentDTO.getCartId());
+	            paymentDTO.setCustomerId(addPaymentDTO.getCustomerId());
+	            paymentDTO.setOrderId(addPaymentDTO.getOrderId());
+	            paymentDTO.setProductId(addPaymentDTO.getProductId());
+	            
+	            
 	            paymentDTO.setPaymentId(paymentSave.getPaymentId());
-	            
-	            ///////////////
-//	            Orders orderSave = ordersRepository.save(order);
-//	            Cart cartSave = cartRepository.save(cart);
-//	            paymentDTO.setCartId(cartSave.getCartId());
-//	            paymentDTO.setOrderId(orderSave.getCartId());
-	            /////////////////
+	            paymentDTO.setPaymentDate(paymentSave.getPaymentDate());
+	            paymentDTO.setPaymentStatus(paymentSave.getPaymentStatus());
+	            paymentDTO.setPaymentType(paymentSave.getPaymentType());
+	            paymentDTO.setTotalPrice(paymentSave.getTotalPrice());
 	            
 	            
-	            
-
 	           
 	            return paymentDTO;
 	            
@@ -139,7 +148,7 @@ public class PaymentServiceImpl implements PaymentService {
 	@Override
 	public List<PaymentDTO> findAll() {
 
-		Iterable<Payment> payment = paymentRepository.findAll();
+		List<Payment> payment = paymentRepository.findAll();
 		List<PaymentDTO> dtos = new ArrayList<>();
 		for (Payment payments : payment) {
 			PaymentDTO dto = new PaymentDTO();

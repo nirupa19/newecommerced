@@ -6,18 +6,17 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
 import org.springframework.stereotype.Service;
 
+import com.cg.ecom.dto.AddOrdersDTO;
 import com.cg.ecom.dto.OrdersDTO;
 import com.cg.ecom.entity.Cart;
 import com.cg.ecom.entity.Customers;
 import com.cg.ecom.entity.Orders;
-import com.cg.ecom.entity.ProductItems;
 import com.cg.ecom.entity.ProductSupplier;
 import com.cg.ecom.exceptions.CartIdAlreadyExistsException;
 import com.cg.ecom.exceptions.ItemNotAvailableException;
-import com.cg.ecom.exceptions.ProductOutStockException;
+import com.cg.ecom.exceptions.OrderNotFoundException;
 import com.cg.ecom.repository.OrdersRepository;
 import com.cg.ecom.repository.ProductItemsRepository;
 import com.cg.ecom.service.OrdersService;
@@ -31,53 +30,63 @@ public class OrdersServiceImpl implements OrdersService {
 	private ProductItemsRepository productItemsRepository;
 
 	@Override
-	public OrdersDTO addOrders(OrdersDTO ordersDTO)  throws CartIdAlreadyExistsException
+	public OrdersDTO addOrders(AddOrdersDTO addOrdersDTO)  throws CartIdAlreadyExistsException
 	{
 		
 //		// Check if the cart ID already exists
-	    boolean existingOrder = ordersRepository.existsByCartId(ordersDTO.getCartId());
-	    
-	    if (existingOrder) 
-	    {
-	       
-	    	 throw new CartIdAlreadyExistsException();
-	    }
+//	    boolean existingOrder = ordersRepository.existsByCartId(ordersDTO.getCartId());
+//	    
+//	    if (existingOrder) 
+//	    {
+//	       
+//	    	 throw new CartIdAlreadyExistsException();
+//	    }
 //	    else {
 	    	
 		Orders orders = new Orders();
-		int productId = ordersDTO.getProductId();
+		int productId = addOrdersDTO.getProductId();
 		
-		ProductItems productItem = productItemsRepository.findById(productId).orElse(null);
-		if(ordersDTO.getQuantity() <= productItem.getQuantity()) 
-		{
+//		ProductItems productItem = productItemsRepository.findById(productId).orElse(null);
+//		if(addOrdersDTO.getQuantity() <= productItem.getQuantity()) 
+//		{
 		
 		Customers cust = new Customers();
 		Cart cart = new Cart();
-		cart.setCartId(ordersDTO.getCartId());
-		orders.setCart(cart);
+		cart.setCartId(addOrdersDTO.getCartId());
+		orders.setCartId(cart);
 		
-		cust.setCustomerId(ordersDTO.getCustomerId());
+		cust.setCustomerId(addOrdersDTO.getCustomerId());
 		orders.setCustomerId(cust);
 //		orders.setDate(ordersDTO.getDate());
-		orders.setDeliveryAddress(ordersDTO.getDeliveryAddress());
-//		orders.setStatus(ordersDTO.getStatus());
+		orders.setDeliveryAddress(addOrdersDTO.getDeliveryAddress());
+		orders.setStatus(addOrdersDTO.getStatus());
 //		orders.setCartId(ordersDTO.getCartId());
 
 		ProductSupplier rest = new ProductSupplier();
-		rest.setProductSupplierId(ordersDTO.getProductSupplierId());
-		orders.setProductSuppliers(rest);
+		rest.setProductSupplierId(addOrdersDTO.getProductSupplierId());
+		orders.setProductSupplierId(rest);
 //		orders.setDate(ordersDTO.getDate());
-		orders.setDeliveryAddress(ordersDTO.getDeliveryAddress());
-//		orders.setStatus(ordersDTO.getStatus());
+		orders.setDeliveryAddress(addOrdersDTO.getDeliveryAddress());
+	//	orders.setStatus(ordersDTO.getStatus());
 //		orders.setCartId(ordersDTO.getCartId());
 
 		Orders ordersave = ordersRepository.save(orders);
+		
+		OrdersDTO ordersDTO = new OrdersDTO();
+		ordersDTO.setCartId(ordersave.getCartId().getCartId());
+		ordersDTO.setCustomerId(ordersave.getCustomerId().getCustomerId());
+		ordersDTO.setDeliveryAddress(ordersave.getDeliveryAddress());
 		ordersDTO.setOrderId(ordersave.getOrderId());
+//		ordersDTO.setProductId(addOrdersDTO.getProductId());
+		ordersDTO.setProductSupplierId(ordersave.getProductSupplierId().getProductSupplierId());
+//		ordersDTO.setQuantity(addOrdersDTO.getQuantity());
+		ordersDTO.setStatus(addOrdersDTO.getStatus());
+		
 		return ordersDTO;
 
 //		Customers customer = customersRepository.findById(ordersDTO.getCustomerId()).get();
-		}
-		throw new ProductOutStockException();
+//		}
+		//throw new ProductOutStockException();
 	    }
 //	}
 	
@@ -85,21 +94,26 @@ public class OrdersServiceImpl implements OrdersService {
 	@Override
 	public OrdersDTO updateOrders(OrdersDTO ordersDTO) {
 
+		Optional<Orders> optionalorder = ordersRepository.findById(ordersDTO.getOrderId());
+	    if (optionalorder.isPresent()) 
+	    {
 		Orders orders = new Orders();
 		ProductSupplier rest = new ProductSupplier();
 		Customers cust = new Customers();
 		rest.setProductSupplierId(ordersDTO.getProductSupplierId());
 		cust.setCustomerId(ordersDTO.getCustomerId());
-		orders.setProductSuppliers(rest);
+		orders.setProductSupplierId(rest);
 		orders.setCustomerId(cust);
 		//orders.setDate(ordersDTO.getDate());
 		orders.setDeliveryAddress(ordersDTO.getDeliveryAddress());
-//		orders.setStatus(ordersDTO.getStatus());
+	    orders.setStatus(ordersDTO.getStatus());
 		orders.setOrderId(ordersDTO.getOrderId());
 //		orders.setCartId(ordersDTO.getCartId());
 
 		ordersRepository.save(orders);
 		return ordersDTO;
+	}
+	    throw new OrderNotFoundException();
 	}
 
 	@Override
@@ -109,30 +123,52 @@ public class OrdersServiceImpl implements OrdersService {
 		ordersRepository.delete(orders);
 		return true;
 	}
-
+//
+//	@Override
+//	public OrdersDTO getById(int id) {
+//
+//		Optional<Orders> orders = ordersRepository.findById(id);
+//		if (orders.isPresent()) 
+//		{
+//			
+//			OrdersDTO dto = new OrdersDTO();
+//			BeanUtils.copyProperties(orders.get(), dto);
+//			return dto;
+//		}
+//		throw new ItemNotAvailableException("Item not Available at this time");
+//	}
+	
 	@Override
 	public OrdersDTO getById(int id) {
-
 		Optional<Orders> orders = ordersRepository.findById(id);
 		if (orders.isPresent()) {
 			OrdersDTO dto = new OrdersDTO();
 			BeanUtils.copyProperties(orders.get(), dto);
+			dto.setCustomerId(orders.get().getCustomerId().getCustomerId());
+			dto.setProductSupplierId(orders.get().getProductSupplierId().getProductSupplierId());
+			dto.setCartId(orders.get().getCartId().getCartId());
+//			dto.setProductId(orders.get().getProductSupplierId().getProduct().getId());
 			return dto;
 		}
-		throw new ItemNotAvailableException("Item not Available at this time");
+		throw new ItemNotAvailableException("Item not available at this time");
 	}
+
+
 
 	@Override
 	public List<OrdersDTO> findAll() {
-
-		Iterable<Orders> orders = ordersRepository.findAll();
+		List<Orders> orders = ordersRepository.findAll();
 		List<OrdersDTO> dtos = new ArrayList<>();
 		for (Orders order : orders) {
 			OrdersDTO dto = new OrdersDTO();
 			BeanUtils.copyProperties(order, dto);
+			dto.setCustomerId(order.getCustomerId().getCustomerId());
+			dto.setProductSupplierId(order.getProductSupplierId().getProductSupplierId());
+			dto.setCartId(order.getCartId().getCartId());
 			dtos.add(dto);
 		}
 		return dtos;
 	}
+
 
 }

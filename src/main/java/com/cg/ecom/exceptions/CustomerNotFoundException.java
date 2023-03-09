@@ -6,7 +6,7 @@ public class CustomerNotFoundException extends RuntimeException
 
 	public CustomerNotFoundException() {
 		super();
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	

@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class PaymentDTO {
+public class AddPaymentDTO {
 
-	private int paymentId;
+
 	private LocalDate paymentDate;
 	private String paymentType;
 	private String paymentStatus;
@@ -20,7 +20,4 @@ public class PaymentDTO {
 	private int orderId;
 	private int productId;
 	private int customerId;
-	private long totalPrice;
-
-
 }

@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cg.ecom.dto.AddProductSupplierDTO;
 import com.cg.ecom.dto.CustomersDTO;
 import com.cg.ecom.dto.ProductSupplierDTO;
-import com.cg.ecom.entity.Customers;
 import com.cg.ecom.exceptions.CustomerNotFoundException;
 import com.cg.ecom.exceptions.ProductSupplierNotAvailableException;
 import com.cg.ecom.service.CustomersService;
@@ -55,9 +55,10 @@ return ResponseEntity.ok(list);
 //////////////
 	
 	@PostMapping("/addProductSuppliers")
-	public ResponseEntity<ProductSupplierDTO> addProductSupplier(@RequestBody ProductSupplierDTO productSupplierDTO) {
+	public ResponseEntity<ProductSupplierDTO> addProductSupplier(@RequestBody AddProductSupplierDTO addProductSupplierDTO)
+	{
 
-		ProductSupplierDTO productSuppliers = productSupplierService.addProductSupplier(productSupplierDTO);
+		ProductSupplierDTO productSuppliers = productSupplierService.addProductSupplier(addProductSupplierDTO);
 		return ResponseEntity.ok(productSuppliers);
 
 	}

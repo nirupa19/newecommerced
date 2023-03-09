@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cg.ecom.dto.AddPaymentDTO;
 import com.cg.ecom.dto.PaymentDTO;
 import com.cg.ecom.exceptions.PaymentNotFoundException;
 import com.cg.ecom.service.PaymentService;
@@ -25,9 +26,9 @@ public class PaymentController {
 	public PaymentService paymentService;
 
 	@PostMapping("/addPayment")
-	public ResponseEntity<PaymentDTO> addPayment(@RequestBody PaymentDTO paymentDTO) {
+	public ResponseEntity<PaymentDTO> addPayment(@RequestBody AddPaymentDTO addPaymentDTO) {
 
-		PaymentDTO addpayment = paymentService.addPayment(paymentDTO);
+		PaymentDTO addpayment = paymentService.addPayment(addPaymentDTO);
 		
 		return ResponseEntity.ok(addpayment);
 

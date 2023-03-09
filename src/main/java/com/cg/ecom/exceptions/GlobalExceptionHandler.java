@@ -58,5 +58,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 		return new ResponseEntity<String>(message6,HttpStatus.IM_USED);
 	}
 	
+	@Value(value="${message7}")
+	private String message7;
+	@ExceptionHandler(value=OrderNotFoundException.class)
+	public ResponseEntity<String> OrderNotFoundException(OrderNotFoundException ex)
+	{
+		return new ResponseEntity<String>(message7,HttpStatus.NOT_FOUND);
+	}
+	
 
 }

@@ -7,12 +7,12 @@ public class ProductSupplierNotAvailableException extends RuntimeException{
 
 	public ProductSupplierNotAvailableException() {
 		super();
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public ProductSupplierNotAvailableException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
+
 	}
 
 }

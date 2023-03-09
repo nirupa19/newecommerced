@@ -7,18 +7,16 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrdersDTO {
+public class AddOrdersDTO {
 
-	private int orderId;
-	//private LocalDate date;
+
 	private String status;
 	private String deliveryAddress;
-	/////////////////
 	private int customerId;
 	private int productSupplierId;
 	private int cartId;
-//	private int productId;
-//	private int quantity;
+	private int productId;
+	private int quantity;
 	
 
 

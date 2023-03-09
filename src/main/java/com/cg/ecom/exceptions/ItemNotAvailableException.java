@@ -7,12 +7,12 @@ public class ItemNotAvailableException extends RuntimeException{
 
 	public ItemNotAvailableException() {
 		super();
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public ItemNotAvailableException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
+
 	}
 
 }

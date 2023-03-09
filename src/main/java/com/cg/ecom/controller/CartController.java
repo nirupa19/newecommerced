@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cg.ecom.dto.AddCartDTO;
 import com.cg.ecom.dto.CartDTO;
 import com.cg.ecom.exceptions.ItemNotAvailableException;
 import com.cg.ecom.service.CartService;
@@ -26,10 +27,10 @@ public class CartController {
 	public CartService cartService;
 
 	@PostMapping("/addCart")
-	public ResponseEntity<CartDTO> addToCart(@RequestBody CartDTO cartDTO){
+	public ResponseEntity<CartDTO> addToCart(@RequestBody AddCartDTO addCartDTO){
 
-		CartDTO cart = cartService.addToCart(cartDTO);
-		return ResponseEntity.ok(cart);
+		CartDTO cartsave = cartService.addToCart(addCartDTO);
+		return ResponseEntity.ok(cartsave);
 
 	}
 
@@ -64,4 +65,7 @@ public class CartController {
 		List<CartDTO> list = cartService.findAll();
 		return ResponseEntity.ok(list);
 	}
+	
+
+	
 }

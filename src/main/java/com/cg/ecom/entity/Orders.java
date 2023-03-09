@@ -1,7 +1,5 @@
 package com.cg.ecom.entity;
 
-import java.time.LocalDate;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,10 +21,10 @@ import lombok.NoArgsConstructor;
 public class Orders {
 
 	@Id
-//	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int orderId;
 //	private LocalDate date;
-//	private String status;
+	private String status;
 	private String deliveryAddress;
 //	private int cartId;
 
@@ -36,17 +34,13 @@ public class Orders {
 
 	@ManyToOne
 	@JoinColumn(name = "productsup_fk")
-	private ProductSupplier productSuppliers;
+	private ProductSupplier productSupplierId;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "Order_cart_fk")
-	private  Cart cart;
+	private  Cart cartId;
 	
 	@OneToOne(mappedBy = "orderId")
 	private Payment payment;
-
-
-
-
 	
 }

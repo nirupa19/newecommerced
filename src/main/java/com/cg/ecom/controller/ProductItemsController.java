@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cg.ecom.dto.AddProductItemsDTO;
 import com.cg.ecom.dto.ProductItemsDTO;
 import com.cg.ecom.exceptions.ItemNotAvailableException;
 import com.cg.ecom.service.ProductItemsService;
@@ -26,9 +27,9 @@ public class ProductItemsController {
 	public ProductItemsService productItemsService;
 	
 	@PostMapping("/addproductitems")
-	public ResponseEntity<ProductItemsDTO> addProductItems(@RequestBody ProductItemsDTO productItemsDTO){
+	public ResponseEntity<ProductItemsDTO> addProductItems(@RequestBody AddProductItemsDTO addProductItemsDTO){
 		
-			ProductItemsDTO productitems = productItemsService.addProductItems(productItemsDTO);
+			ProductItemsDTO productitems = productItemsService.addProductItems(addProductItemsDTO);
 			return ResponseEntity.ok(productitems);
 		
 	}
