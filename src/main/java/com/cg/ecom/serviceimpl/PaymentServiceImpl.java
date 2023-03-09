@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.cg.ecom.dto.AddPaymentDTO;
 import com.cg.ecom.dto.PaymentDTO;
 import com.cg.ecom.entity.Cart;
+import com.cg.ecom.entity.Customers;
 import com.cg.ecom.entity.Orders;
 import com.cg.ecom.entity.Payment;
 import com.cg.ecom.entity.ProductItems;
@@ -44,6 +45,7 @@ public class PaymentServiceImpl implements PaymentService {
 	    Payment payment = new Payment();
 	    Cart cart = new Cart();
 	    Orders order = new  Orders();
+	    Customers customers = new Customers();
 	    
 	    
 
@@ -61,6 +63,9 @@ public class PaymentServiceImpl implements PaymentService {
 	        	order.setOrderId(addPaymentDTO.getOrderId());
 	    	    payment.setOrderId(order);
 	    	    cart.setCartId(addPaymentDTO.getCartId());
+	    	    customers.setCustomerId(addPaymentDTO.getCustomerId());
+	    	    payment.setCustomerId(customers);
+	    	    
 //	    	    payment.setCartId (cart);
 //	    	    payment.setPaymentId(addPaymentDTO.getPaymentId());
 	    	    payment.setPaymentDate(addPaymentDTO.getPaymentDate());
@@ -93,6 +98,7 @@ public class PaymentServiceImpl implements PaymentService {
 	            paymentDTO.setPaymentStatus(paymentSave.getPaymentStatus());
 	            paymentDTO.setPaymentType(paymentSave.getPaymentType());
 	            paymentDTO.setTotalPrice(paymentSave.getTotalPrice());
+	            paymentDTO.setCustomerId(paymentSave.getCustomerId().getCustomerId());
 	            return paymentDTO;  
 	        } 
 	        

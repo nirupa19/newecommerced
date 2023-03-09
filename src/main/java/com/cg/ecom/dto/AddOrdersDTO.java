@@ -16,7 +16,7 @@ public class AddOrdersDTO {
 	private int productSupplierId;
 	private int cartId;
 	private int productId;
-	private int quantity;
+//	private int quantity;
 	
 
 
