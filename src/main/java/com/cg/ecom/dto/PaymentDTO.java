@@ -15,12 +15,12 @@ public class PaymentDTO {
 	private LocalDate paymentDate;
 	private String paymentType;
 	private String paymentStatus;
-	///////////
-	private int cartId;
-	private int orderId;
-	private int productId;
-	private int customerId;
 	private long totalPrice;
+	///////////
+//	private int cartId;
+	private int orderId;
+	private int customerId;
+	
 
 
 }

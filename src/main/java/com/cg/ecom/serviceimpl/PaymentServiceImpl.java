@@ -32,16 +32,10 @@ public class PaymentServiceImpl implements PaymentService {
 	private CartRepository cartRepository;
 	
 	@Autowired
-	private OrdersRepository ordersRepository;
-	
-	@Autowired
 	private ProductItemsRepository productItemsRepository;
 	
 
-	private ProductItems productItems = new ProductItems();
 	
-
-	private Cart cart = new Cart();
 
 		
 	@Override
@@ -67,7 +61,7 @@ public class PaymentServiceImpl implements PaymentService {
 	        	order.setOrderId(addPaymentDTO.getOrderId());
 	    	    payment.setOrderId(order);
 	    	    cart.setCartId(addPaymentDTO.getCartId());
-	    	    payment.setCartId (cart);
+//	    	    payment.setCartId (cart);
 //	    	    payment.setPaymentId(addPaymentDTO.getPaymentId());
 	    	    payment.setPaymentDate(addPaymentDTO.getPaymentDate());
 	    	    payment.setPaymentType(addPaymentDTO.getPaymentType());
@@ -89,24 +83,17 @@ public class PaymentServiceImpl implements PaymentService {
 //	            paymentRepository.updateProductItemsQuantityByCustomerId(paymentDTO.getCustomerId());
 	            
 	            Payment paymentSave = paymentRepository.save(payment);
-	            
 	            PaymentDTO paymentDTO = new PaymentDTO();
-	            paymentDTO.setCartId(addPaymentDTO.getCartId());
+//	            paymentDTO.setCartId(addPaymentDTO.getCartId());
 	            paymentDTO.setCustomerId(addPaymentDTO.getCustomerId());
 	            paymentDTO.setOrderId(addPaymentDTO.getOrderId());
-	            paymentDTO.setProductId(addPaymentDTO.getProductId());
-	            
-	            
+//	            paymentDTO.setProductId(addPaymentDTO.getProductId());
 	            paymentDTO.setPaymentId(paymentSave.getPaymentId());
 	            paymentDTO.setPaymentDate(paymentSave.getPaymentDate());
 	            paymentDTO.setPaymentStatus(paymentSave.getPaymentStatus());
 	            paymentDTO.setPaymentType(paymentSave.getPaymentType());
 	            paymentDTO.setTotalPrice(paymentSave.getTotalPrice());
-	            
-	            
-	           
-	            return paymentDTO;
-	            
+	            return paymentDTO;  
 	        } 
 	        
 	        else 
@@ -121,7 +108,7 @@ public class PaymentServiceImpl implements PaymentService {
 	    }
 	}
 
-	///////////////////////////////////////////////////
+
 
 	@Override
 	public boolean deletePayment(PaymentDTO paymentDTO) {
@@ -135,27 +122,30 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Override
 	public PaymentDTO getById(int id) {
-
-		Optional<Payment> payment = paymentRepository.findById(id);
-		if (payment.isPresent()) {
-			PaymentDTO dto = new PaymentDTO();
-			BeanUtils.copyProperties(payment.get(), dto);
-			return dto;
-		}
-		throw new PaymentNotFoundException("Payment not Available at this time");
+	    Optional<Payment> payment = paymentRepository.findById(id);
+	    if (payment.isPresent()) {
+	        PaymentDTO dto = new PaymentDTO();
+	        BeanUtils.copyProperties(payment.get(), dto);
+	        dto.setOrderId(payment.get().getOrderId().getOrderId());
+	        dto.setCustomerId(payment.get().getCustomerId().getCustomerId());
+	        return dto;
+	    }
+	    throw new PaymentNotFoundException("Payment not Available at this time");
 	}
 
 	@Override
 	public List<PaymentDTO> findAll() {
-
-		List<Payment> payment = paymentRepository.findAll();
-		List<PaymentDTO> dtos = new ArrayList<>();
-		for (Payment payments : payment) {
-			PaymentDTO dto = new PaymentDTO();
-			BeanUtils.copyProperties(payments, dto);
-			dtos.add(dto);
-		}
-		return dtos;
+	    List<Payment> payment = paymentRepository.findAll();
+	    List<PaymentDTO> dtos = new ArrayList<>();
+	    for (Payment payments : payment) {
+	        PaymentDTO dto = new PaymentDTO();
+	        BeanUtils.copyProperties(payments, dto);
+	        dto.setOrderId(payments.getOrderId().getOrderId());
+	        dto.setCustomerId(payments.getCustomerId().getCustomerId());
+	        dtos.add(dto);
+	    }
+	    return dtos;
 	}
+
 
 }

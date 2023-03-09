@@ -6,8 +6,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,13 +29,19 @@ public class Payment {
 	private String paymentType;
 	private String paymentStatus;
     private long totalPrice;
-	@OneToOne
-	@JoinColumn(name="payment_cart_fk")
-	private Cart cartId;
+    
+//    @Transient
+//	@OneToOne
+//	@JoinColumn(name="payment_cart_fk")
+//	private Cart cartId;
 	
 	@OneToOne
 	@JoinColumn(name="payment_order_fk")
 	private Orders orderId ;
+	
+	@ManyToOne
+	@JoinColumn(name="payment_customer_fk")
+	private Customers customerId;
 	
 //	@OneToMany(cascade = CascadeType.ALL)
 //	@JoinColumn(name="payment_product_fk")
